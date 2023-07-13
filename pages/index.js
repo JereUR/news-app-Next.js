@@ -5,8 +5,10 @@ export default function Home({ articles }) {
   return (
     <PageLayout title="NewsApp - Home">
       <div className={styles.container}>
-        {articles.length === 0 && <p>No tenemos artículos</p>}
-        {articles.length > 0 &&
+        {articles === null ? (
+          <p>No tenemos artículos</p>
+        ) : (
+          articles.length > 0 &&
           articles.map((article, index) => (
             <div key={index}>
               <img
@@ -16,7 +18,8 @@ export default function Home({ articles }) {
               <h2>{article.title}</h2>
               <p>{article.description}</p>
             </div>
-          ))}
+          ))
+        )}
       </div>
     </PageLayout>
   )
@@ -24,9 +27,20 @@ export default function Home({ articles }) {
 
 export async function getStaticProps() {
   const response = await fetch(process.env.API_URL)
-  const { articles } = await response.json()
+  const data = await response.json()
+
+  if (!data || !data.articles) {
+    return {
+      props: {
+        articles: null
+      }
+    }
+  }
+
   return {
-    props: { articles }
+    props: {
+      articles: data.articles
+    }
   }
 }
 
