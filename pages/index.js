@@ -1,26 +1,11 @@
 import styles from '../styles/Home.module.css'
-import Link from 'next/link'
 import PageLayout from '../components/PageLayout'
-import { useEffect, useState } from 'react'
 
-export default function Home() {
-  const [articles, setArticles] = useState([])
-
-  useEffect(() => {
-    fetch(
-      'https://newsapi.org/v2/everything?q=tesla&from=2023-06-12&sortBy=publishedAt&apiKey=8af95e842e104a93947b58b91499048b'
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const { articles } = data
-        setArticles(articles)
-      })
-  }, [])
-
+export default function Home({ articles }) {
   return (
     <PageLayout title="NewsApp - Home">
       <div className={styles.container}>
-        {articles.length === 0 && <p>Loading...</p>}
+        {articles.length === 0 && <p>No tenemos artículos</p>}
         {articles.length > 0 &&
           articles.map((article, index) => (
             <div key={index}>
@@ -36,3 +21,19 @@ export default function Home() {
     </PageLayout>
   )
 }
+
+export async function getStaticProps() {
+  const response = await fetch(process.env.API_URL)
+  const { articles } = await response.json()
+  return {
+    props: { articles }
+  }
+}
+
+/* export async function getServerSideProps(context) {
+  const response = await fetch(process.env.API_URL)
+  const { articles } = await response.json()
+  return {
+    props: { articles }
+  }
+} */
