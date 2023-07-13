@@ -1,11 +1,13 @@
+import { createContext } from 'react'
 import '../styles/globals.css'
-import Head from 'next/head'
+
+const ThemeContext = createContext('dark')
 
 function MyApp({ Component, pageProps }) {
   return (
-    <>
+    <ThemeContext.Provider value="dark">
       <Component {...pageProps} />
-    </>
+    </ThemeContext.Provider>
   )
 }
 
